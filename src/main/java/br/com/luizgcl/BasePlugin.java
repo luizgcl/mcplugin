@@ -80,6 +80,7 @@ public abstract class BasePlugin extends JavaPlugin {
         try {
           CommandBase command = (CommandBase) classes.newInstance();
           command.setup();
+          count += 1;
         } catch (InstantiationException | IllegalAccessException e) {
           e.printStackTrace();
           getLogger().severe("Ocorreu algum erro ao registrar o comando '" + classes.getName() + "'.");

@@ -22,6 +22,7 @@ public class UserCommands extends CommandBase {
             "§eSeu ping é §b%s ms§e.".formatted(player.getPing())
         );
       }
-    }).usage("ping").register(Main.getInstance(),"ms", "latency");
+    }).usage("ping").player()
+        .register(Main.getInstance(),"ms", "latency");
   }
 }

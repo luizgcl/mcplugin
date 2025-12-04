@@ -29,7 +29,8 @@ public class CommandRegister {
 
         Field commandMapField;
         try {
-            commandMapField = PluginManager.class.getDeclaredField("commandMap");
+            PluginManager pm = Bukkit.getServer().getPluginManager();
+            commandMapField = pm.getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
