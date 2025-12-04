@@ -26,6 +26,7 @@ public abstract class BasePlugin extends JavaPlugin {
   public void onEnable() {
     super.onEnable();
     this.registerListeners();
+    this.registerCommands();
     this.enable();
   }
 
@@ -44,7 +45,7 @@ public abstract class BasePlugin extends JavaPlugin {
     long millis = System.currentTimeMillis();
 
     getLogger().info("Registrando eventos...");
-    for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().toString())) {
+    for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().getName())) {
       if (! Listener.class.isAssignableFrom(classes)) {
         continue;
       }
@@ -74,7 +75,7 @@ public abstract class BasePlugin extends JavaPlugin {
     long millis = System.currentTimeMillis();
 
     getLogger().info("Iniciando registro de comandos...");
-    for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().toString())) {
+    for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().getName())) {
       if (CommandBase.class.isAssignableFrom(classes) && classes != CommandBase.class) {
         try {
           CommandBase command = (CommandBase) classes.newInstance();
