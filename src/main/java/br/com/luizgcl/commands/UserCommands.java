@@ -13,16 +13,41 @@ public class UserCommands extends CommandBase {
   @Override
   public void setup() {
     CommandFactory.make(new CommandBuilderImpl() {
-      @Override
-      public void handler(CommandSender commandSender, CommandHelper helper, String... args)
-          throws Exception {
-        Player player = helper.getPlayer(commandSender);
+          @Override
+          public void handler(CommandSender commandSender, CommandHelper helper, String... args)
+              throws Exception {
+            Player player = helper.getPlayer(commandSender);
 
-        player.sendMessage(
-            "§eSeu ping é §b%s ms§e.".formatted(player.getPing())
-        );
-      }
-    }).usage("ping").player()
-        .register(Main.getInstance(),"ms", "latency");
+            player.sendMessage(
+                "§eSeu ping é §b%s ms§e.".formatted(player.getPing())
+            );
+          }
+        })
+        .usage("ping")
+        .player()
+        .register(Main.getInstance(), "ms", "latency", "ping");
+
+    CommandFactory.make(new CommandBuilderImpl() {
+          @Override
+          public void handler(CommandSender commandSender, CommandHelper helper, String... args)
+              throws Exception {
+            Player player = helper.getPlayer(commandSender);
+
+            boolean canFly = player.isFlying() || player.getAllowFlight();
+
+            player.setAllowFlight(!canFly);
+            if (canFly) {
+              player.setFlying(false);
+            }
+
+            player.sendMessage(
+                canFly ? "§cVocê desativou o modo de voô." :
+                    "§aVocê ativou o modo de voô."
+            );
+          }
+        })
+        .usage("fly")
+        .player()
+        .register(Main.getInstance(), "fly", "voar");
   }
 }
