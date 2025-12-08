@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.mongodb:mongodb-driver-sync:5.0.0")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
     compileOnly("org.projectlombok:lombok:1.18.34")
     compileOnly("io.papermc.paper:paper-api:$api_version")
