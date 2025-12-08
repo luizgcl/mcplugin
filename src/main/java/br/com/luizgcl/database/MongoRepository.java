@@ -2,7 +2,6 @@ package br.com.luizgcl.database;
 
 import br.com.luizgcl.Main;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -11,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import org.bson.Document;
 
-public abstract class MongoRepository<T extends  MongoEntity> implements RepositoryContract<T> {
+public abstract class MongoRepository<T extends MongoEntity> implements RepositoryContract<T> {
 
   MongoDatabase database;
   MongoCollection<Document> collection;
@@ -21,9 +20,7 @@ public abstract class MongoRepository<T extends  MongoEntity> implements Reposit
     this.database = MongoConnection.getMongoDatabase();
     this.collection = database.getCollection(collectionName);
 
-    this.typeOfT = ((ParameterizedType) getClass()
-        .getGenericSuperclass())
-        .getActualTypeArguments()[0];
+    this.typeOfT = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     if (this.database == null) {
       throw new RuntimeException("Database not connected");
@@ -67,10 +64,8 @@ public abstract class MongoRepository<T extends  MongoEntity> implements Reposit
   @Override
   public void update(UUID id, T entity) {
     try {
-      collection.findOneAndUpdate(
-          Filters.eq("id", id.toString()),
-          new Document("$set", this.entityToDocument(entity))
-      );
+      collection.findOneAndUpdate(Filters.eq("id", id.toString()),
+          new Document("$set", this.entityToDocument(entity)));
     } catch (Exception e) {
       this.logException(e);
     }
@@ -90,7 +85,6 @@ public abstract class MongoRepository<T extends  MongoEntity> implements Reposit
   }
 
 
-
   private T documentToEntity(Document document) {
     return (T) new Gson().fromJson(document.toJson(), typeOfT);
   }
@@ -98,5 +92,4 @@ public abstract class MongoRepository<T extends  MongoEntity> implements Reposit
   private void logException(Exception e) {
     Main.getInstance().getLogger().severe(e.getMessage());
   }
-
 }
