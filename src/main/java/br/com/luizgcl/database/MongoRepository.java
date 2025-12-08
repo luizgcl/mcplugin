@@ -2,6 +2,7 @@ package br.com.luizgcl.database;
 
 import br.com.luizgcl.Main;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -68,7 +69,7 @@ public abstract class MongoRepository<T extends  MongoEntity> implements Reposit
     try {
       collection.findOneAndUpdate(
           Filters.eq("id", id.toString()),
-          this.entityToDocument(entity)
+          new Document("$set", this.entityToDocument(entity))
       );
     } catch (Exception e) {
       this.logException(e);
