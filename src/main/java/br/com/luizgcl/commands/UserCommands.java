@@ -5,6 +5,10 @@ import br.com.luizgcl.command.CommandBase;
 import br.com.luizgcl.command.builder.impl.CommandBuilderImpl;
 import br.com.luizgcl.command.factory.CommandFactory;
 import br.com.luizgcl.command.helper.CommandHelper;
+import br.com.luizgcl.entity.User;
+import br.com.luizgcl.repositories.UserRepository;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,6 +36,8 @@ public class UserCommands extends CommandBase {
           public void handler(CommandSender commandSender, CommandHelper helper, String... args)
               throws Exception {
             Player player = helper.getPlayer(commandSender);
+            UserRepository userRepository = new UserRepository();
+            User user = userRepository.findOne(player.getUniqueId());
 
             boolean canFly = player.isFlying() || player.getAllowFlight();
 
@@ -44,6 +50,13 @@ public class UserCommands extends CommandBase {
                 canFly ? "§cVocê desativou o modo de voô." :
                     "§aVocê ativou o modo de voô."
             );
+
+            user.setAllowFlight(player.getAllowFlight());
+            user.setFlying(player.isFlying());
+
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+              userRepository.update(user.getId(), user);
+            });
           }
         })
         .usage("fly")

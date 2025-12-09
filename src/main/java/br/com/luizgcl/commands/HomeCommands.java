@@ -7,6 +7,8 @@ import br.com.luizgcl.command.factory.CommandFactory;
 import br.com.luizgcl.command.helper.CommandHelper;
 import br.com.luizgcl.entity.Home;
 import br.com.luizgcl.repositories.HomeRepository;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,17 +26,21 @@ public class HomeCommands extends CommandBase {
             Home home = homeRepository.findOne(player.getUniqueId());
 
             if (home == null) {
-              home = new Home(player.getUniqueId(), player.getLocation());
-              homeRepository.create(home);
+              Home newHome = new Home(player.getUniqueId(), player.getLocation());
+              Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+                homeRepository.create(newHome);
+              });
               player.sendMessage("§aVocê definiu sua casa.");
-              player.sendMessage("§7§mDICA:§r§7 Para ir para sua casa, digite: /home");
+              player.sendMessage("§7§nDICA:§r§7 Para ir para sua casa, digite: /home");
               return;
             }
 
             home.setLocation(player.getLocation());
-            homeRepository.update(player.getUniqueId(), home);
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+              homeRepository.update(player.getUniqueId(), home);
+            });
             player.sendMessage("§eVocê atualizou a localização da sua casa.");
-            player.sendMessage("§7§mDICA:§r§7 Para ir para sua casa, digite: /home");
+            player.sendMessage("§7§nDICA:§r§7 Para ir para sua casa, digite: /home");
           }
         }).usage("sethome")
         .player()
@@ -51,7 +57,7 @@ public class HomeCommands extends CommandBase {
 
             if (home == null) {
               player.sendMessage("§cVocê não possui uma casa definida.");
-              player.sendMessage("§7§mDICA:§r§7 Para definir sua casa, digite: /sethome");
+              player.sendMessage("§7§nDICA:§r§7 Para definir sua casa, digite: /sethome");
               return;
             }
 
