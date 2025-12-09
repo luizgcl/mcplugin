@@ -62,5 +62,30 @@ public class UserCommands extends CommandBase {
         .usage("fly")
         .player()
         .register(Main.getInstance(), "fly", "voar");
+
+      CommandFactory.make(new CommandBuilderImpl() {
+          @Override
+          public void handler(CommandSender commandSender, CommandHelper helper, String... args)
+              throws Exception {
+            Player player = helper.getPlayer(commandSender);
+            UserRepository userRepository = new UserRepository();
+            User user = userRepository.findOne(player.getUniqueId());
+
+            boolean canMiner = user.isMinerActive();
+
+            user.setMinerActive(!canMiner);
+            player.sendMessage(
+                canMiner ? "§cVocê desativou o modo miner." :
+                    "§aVocê ativou o modo miner."
+            );
+
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+              userRepository.update(user);
+            });
+          }
+        })
+        .usage("miner")
+        .player()
+        .register(Main.getInstance(), "miner");
   }
 }

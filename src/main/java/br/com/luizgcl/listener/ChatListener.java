@@ -13,8 +13,8 @@ public class ChatListener implements Listener {
     void event(AsyncChatEvent event) {
         event.renderer((source, sourceDisplayName, message, viewer) -> 
             source.displayName().colorIfAbsent(NamedTextColor.GRAY)
-            .append(Component.text(" §8» §f" ))
-            .append(message)
+            .append(Component.text(" » " ).color(NamedTextColor.DARK_GRAY))
+            .append(message.color(NamedTextColor.WHITE))
         );
     }
 }

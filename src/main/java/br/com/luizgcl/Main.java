@@ -1,12 +1,16 @@
 package br.com.luizgcl;
 
 import br.com.luizgcl.database.MongoConnection;
+import br.com.luizgcl.manager.TabListManager;
 import lombok.Getter;
 
 public class Main extends BasePlugin {
 
   @Getter
   private static MongoConnection mongoConnection;
+
+  @Getter
+  private static TabListManager tabManager;
 
   @Override
   public void load() {
@@ -18,6 +22,15 @@ public class Main extends BasePlugin {
   @Override
   public void enable() {
     getMongoConnection().connect();
+
+    tabManager = new TabListManager();
+
+    getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+      getServer().getScheduler().runTask(this, () -> {
+          tabManager.updateAll();
+      });
+    }, 0L, 20L); 
+
     getServer().getLogger().info("Plugin enabled!");
   }
 

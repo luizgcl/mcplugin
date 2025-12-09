@@ -6,6 +6,7 @@ import br.com.luizgcl.command.builder.impl.CommandBuilderImpl;
 import br.com.luizgcl.command.factory.CommandFactory;
 import br.com.luizgcl.command.helper.CommandHelper;
 import br.com.luizgcl.entity.Home;
+import br.com.luizgcl.menu.system.HomeMenu;
 import br.com.luizgcl.repositories.HomeRepository;
 
 import org.bukkit.Bukkit;
@@ -52,6 +53,11 @@ public class HomeCommands extends CommandBase {
               throws Exception {
             Player player = (Player) commandSender;
             HomeRepository homeRepository = new HomeRepository();
+
+            if (args.length > 0) {
+              new HomeMenu().open(player);
+              return;
+            }
 
             Home home = homeRepository.findOne(player.getUniqueId());
 

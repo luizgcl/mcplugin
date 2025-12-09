@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import br.com.luizgcl.Main;
 import br.com.luizgcl.entity.User;
+import br.com.luizgcl.manager.TabListManager;
 import br.com.luizgcl.repositories.UserRepository;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,6 +42,9 @@ public class PlayerListener implements Listener {
 
     event.getPlayer().setAllowFlight(user.isAllowFlight());
     event.getPlayer().setFlying(user.isFlying());
+
+    Main.getTabManager().setHeaderFooter(event.getPlayer());
+    Main.getTabManager().updatePlayerTeam(event.getPlayer());
   }
 
   @EventHandler
