@@ -37,7 +37,7 @@ public class HomeCommands extends CommandBase {
 
             home.setLocation(player.getLocation());
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-              homeRepository.update(player.getUniqueId(), home);
+              homeRepository.update(home);
             });
             player.sendMessage("§eVocê atualizou a localização da sua casa.");
             player.sendMessage("§7§nDICA:§r§7 Para ir para sua casa, digite: /home");

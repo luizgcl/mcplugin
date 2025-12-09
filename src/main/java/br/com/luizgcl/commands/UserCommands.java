@@ -55,7 +55,7 @@ public class UserCommands extends CommandBase {
             user.setFlying(player.isFlying());
 
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-              userRepository.update(user.getId(), user);
+              userRepository.update(user);
             });
           }
         })

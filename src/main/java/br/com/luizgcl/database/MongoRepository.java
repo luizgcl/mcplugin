@@ -2,11 +2,12 @@ package br.com.luizgcl.database;
 
 import br.com.luizgcl.Main;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+
+import java.lang.reflect.ParameterizedType;
 import java.util.UUID;
 import org.bson.Document;
 
@@ -59,9 +60,9 @@ public abstract class MongoRepository<T extends MongoEntity> implements Reposito
   }
 
   @Override
-  public void update(UUID id, T entity) {
+  public void update(T entity) {
     try {
-      collection.findOneAndUpdate(Filters.eq("id", id.toString()),
+      collection.findOneAndUpdate(Filters.eq("id", entity.getId().toString()),
           new Document("$set", this.entityToDocument(entity)));
     } catch (Exception e) {
       this.logException(e);
@@ -85,8 +86,9 @@ public abstract class MongoRepository<T extends MongoEntity> implements Reposito
   private T documentToEntity(Document document) {
     T entity = new Gson().fromJson(
         document.toJson(),
-        new TypeToken<T>() {}.getType()
+        ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]
     );
+    
 
     return entity;
   }
