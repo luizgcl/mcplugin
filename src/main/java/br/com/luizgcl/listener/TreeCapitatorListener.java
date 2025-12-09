@@ -1,17 +1,11 @@
 package br.com.luizgcl.listener;
 
-import com.destroystokyo.paper.MaterialTags;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,12 +29,6 @@ public class TreeCapitatorListener implements Listener {
       Bukkit.getLogger().info(block.getType().name() + " is not a log");
       return;
     }
-
-    World world = player.getWorld();
-    Double doub = Double.valueOf(block.getLocation().getY() + 1.0D);
-
-    Location location = new Location(world, block.getLocation().getX(), doub.doubleValue(),
-        block.getLocation().getZ());
 
     event.setCancelled(true);
     breakWholeTree(block, player);

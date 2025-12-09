@@ -55,6 +55,7 @@ public class CommandRegister {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, org.bukkit.command.Command> getKnownCommandMap() {
         try {
             //noinspection unchecked
@@ -70,8 +71,8 @@ public class CommandRegister {
             try {
                 PluginCommand cmd = COMMAND_CONSTRUCTOR.newInstance(alias, plugin);
 
-                getCommandMap().register(plugin.getDescription().getName(), cmd);
-                getKnownCommandMap().put(plugin.getDescription().getName().toLowerCase() + ":" + alias.toLowerCase(), cmd);
+                getCommandMap().register(plugin.getPluginMeta().getName(), cmd);
+                getKnownCommandMap().put(plugin.getPluginMeta().getName().toLowerCase() + ":" + alias.toLowerCase(), cmd);
                 getKnownCommandMap().put(alias.toLowerCase(), cmd);
                 cmd.setLabel(alias.toLowerCase());
 
@@ -86,6 +87,7 @@ public class CommandRegister {
         return command;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends CommandExecutor> T unregisterCommand(T command) {
         CommandMap map = getCommandMap();
         try {

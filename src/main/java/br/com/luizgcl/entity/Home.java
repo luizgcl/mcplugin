@@ -1,6 +1,8 @@
 package br.com.luizgcl.entity;
 
 import br.com.luizgcl.database.MongoEntity;
+
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import java.util.Map;
 import java.util.UUID;
@@ -20,6 +22,15 @@ public class Home extends MongoEntity {
   }
 
   public Location getLocation() {
-    return Location.deserialize(new Gson().fromJson(this.location, Map.class));
+    if (this.location == null) {
+      return null;
+    }
+    
+    Map<String, Object> map = new Gson().fromJson(
+        this.location,
+        new TypeToken<Map<String, Object>>() {}.getType()
+    );
+
+    return Location.deserialize(map);
   }
 }

@@ -1,12 +1,12 @@
 package br.com.luizgcl.database;
 
 import br.com.luizgcl.Main;
+
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.UUID;
 import org.bson.Document;
 
@@ -14,13 +14,10 @@ public abstract class MongoRepository<T extends MongoEntity> implements Reposito
 
   MongoDatabase database;
   MongoCollection<Document> collection;
-  private final Type typeOfT;
 
   public MongoRepository(String collectionName) {
     this.database = MongoConnection.getMongoDatabase();
     this.collection = database.getCollection(collectionName);
-
-    this.typeOfT = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
     if (this.database == null) {
       throw new RuntimeException("Database not connected");
@@ -86,7 +83,12 @@ public abstract class MongoRepository<T extends MongoEntity> implements Reposito
 
 
   private T documentToEntity(Document document) {
-    return (T) new Gson().fromJson(document.toJson(), typeOfT);
+    T entity = new Gson().fromJson(
+        document.toJson(),
+        new TypeToken<T>() {}.getType()
+    );
+
+    return entity;
   }
 
   private void logException(Exception e) {

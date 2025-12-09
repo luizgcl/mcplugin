@@ -12,7 +12,7 @@ public class Main extends BasePlugin {
   public void load() {
     getServer().getLogger().info("Loading plugin...");
 
-    this.mongoConnection = new MongoConnection(this);
+    mongoConnection = new MongoConnection(this);
   }
 
   @Override

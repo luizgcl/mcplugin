@@ -4,6 +4,8 @@ import br.com.luizgcl.command.CommandBase;
 import br.com.luizgcl.command.loader.CommandRegister;
 import br.com.luizgcl.utils.ClassGetter;
 import br.com.luizgcl.utils.Util;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import lombok.Getter;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +20,7 @@ public abstract class BasePlugin extends JavaPlugin {
 
   @Override
   public void onLoad() {
-    this.instance = this;
+    instance = this;
     this.load();
   }
 
@@ -32,12 +34,15 @@ public abstract class BasePlugin extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    instance = null;
     super.onDisable();
     this.disable();
   }
 
   public abstract void load();
+
   public abstract void enable();
+
   public abstract void disable();
 
   protected void registerListeners() {
@@ -46,12 +51,12 @@ public abstract class BasePlugin extends JavaPlugin {
 
     getLogger().info("Registrando eventos...");
     for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().getName())) {
-      if (! Listener.class.isAssignableFrom(classes)) {
+      if (!Listener.class.isAssignableFrom(classes)) {
         continue;
       }
 
       try {
-        Listener listener = (Listener) classes.newInstance();
+        Listener listener = (Listener) classes.getDeclaredConstructor().newInstance();
         registerEvent(listener);
 
         for (Method method : listener.getClass().getDeclaredMethods()) {
@@ -59,7 +64,7 @@ public abstract class BasePlugin extends JavaPlugin {
             count += 1;
           }
         }
-      } catch (InstantiationException | IllegalAccessException  e) {
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
         getLogger().severe("Ocorreu um erro ao registrar eventos da classe " + classes.getSimpleName());
         getLogger().severe("> Causa do erro " + e.getCause());
       }
@@ -78,10 +83,10 @@ public abstract class BasePlugin extends JavaPlugin {
     for (Class<?> classes : ClassGetter.getClassesForPackage(this, getClass().getPackage().getName())) {
       if (CommandBase.class.isAssignableFrom(classes) && classes != CommandBase.class) {
         try {
-          CommandBase command = (CommandBase) classes.newInstance();
+          CommandBase command = (CommandBase) classes.getDeclaredConstructor().newInstance();
           command.setup();
           count += 1;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
           e.printStackTrace();
           getLogger().severe("Ocorreu algum erro ao registrar o comando '" + classes.getName() + "'.");
         }
