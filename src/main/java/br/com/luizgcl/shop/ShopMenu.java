@@ -2,37 +2,41 @@ package br.com.luizgcl.shop;
 
 import br.com.luizgcl.Main;
 import br.com.luizgcl.manager.BackpackItemManager;
+import br.com.luizgcl.manager.PetManager;
 import br.com.luizgcl.menu.system.Menu;
 import br.com.luizgcl.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopMenu extends Menu {
 
     private final BackpackItemManager backpackManager;
-    // Preço: 64 Mudas de Carvalho
-    private final Material CURRENCY = Material.OAK_SAPLING;
-    private final int PRICE = 64;
+    private final PetManager petManager;
+    private final int BACKPACK_PRICE = 64;
+    private final int SHEEP_PRICE = 128;
 
     public ShopMenu() {
         super(3, MiniMessage.miniMessage().deserialize("<gradient:gold:yellow><b>Loja de Mochilas</b></gradient>"));
         this.backpackManager = Main.getBackpackItemManager();
+        this.petManager = Main.getPetManager();
         initItems();
     }
 
     private void initItems() {
         // --- Slot 13: O Produto (Mochila) ---
-        setItem(13,
+        setItem(11,
             new ItemBuilder(Material.LEATHER)
                 .name("<green><b>Mochila de Viagem</b>")
                 .lore(
                     "<gray>Carregue mais itens com você!",
                     "",
-                    "<yellow>Preço: <white>" + PRICE + "x Mudas de Carvalho",
+                    "<yellow>Preço: <white>" + BACKPACK_PRICE + "x Mudas (Qualquer tipo)",
+                    "<gray>Aceitamos: Carvalho, Pinheiro, Bétula, etc.",
                     "",
                     "<green>Clique para comprar!"
                 ).build(),
@@ -41,8 +45,8 @@ public class ShopMenu extends Menu {
             event -> {
                 Player player = (Player) event.getWhoClicked();
                 
-                if (hasFunds(player)) {
-                    removeFunds(player);
+                if (hasFunds(player, BACKPACK_PRICE)) {
+                    removeFunds(player, BACKPACK_PRICE);
                     
                     // Entrega a mochila
                     player.getInventory().addItem(backpackManager.createNewBackpack());
@@ -51,7 +55,40 @@ public class ShopMenu extends Menu {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
                     player.closeInventory();
                 } else {
-                    player.sendMessage(Component.text("§cVocê precisa de " + PRICE + " mudas de carvalho!"));
+                    player.sendMessage(Component.text("§cMudas insuficientes!"));
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                }
+            }
+        );
+
+        setItem(15,
+            new ItemBuilder(Material.WHITE_WOOL)
+                .name("<light_purple><b>Ovelha de Estimação</b>")
+                .lore(
+                    "<gray>Um companheiro fofo!",
+                    "<gray>Ela te segue para onde for.",
+                    "",
+                    "<yellow>Preço: <white>" + SHEEP_PRICE + "x Mudas",
+                    "",
+                    "<green>Clique para adotar!"
+                ).build(),
+
+            event -> {
+                Player player = (Player) event.getWhoClicked();
+                
+                if (hasFunds(player, SHEEP_PRICE) || player.getName().equalsIgnoreCase("anaclsz")) {
+
+                    if (! player.getName().equalsIgnoreCase("anaclsz")) {
+                        removeFunds(player, SHEEP_PRICE);
+                    }
+                    
+                    this.petManager.spawnPet(player);
+
+                    player.sendMessage(Component.text("§dVocê adotou uma ovelha!"));
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                    player.closeInventory();
+                } else {
+                    player.sendMessage(Component.text("§cMudas insuficientes!"));
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                 }
             }
@@ -67,13 +104,47 @@ public class ShopMenu extends Menu {
     }
 
     // Verifica se o player tem as sementes necessárias
-    private boolean hasFunds(Player player) {
-        return player.getInventory().contains(CURRENCY, PRICE);
+    private boolean hasFunds(Player player, int amount) {
+        int totalSaplings = 0;
+        ItemStack[] contents = player.getInventory().getContents();
+
+        // 1. Contagem: Verifica se o jogador tem o suficiente no total
+        for (ItemStack item : contents) {
+            if (item != null && Tag.SAPLINGS.isTagged(item.getType())) {
+                totalSaplings += item.getAmount();
+            }
+        }
+
+        return totalSaplings >= amount;
     }
 
     // Remove as sementes do inventário
-    private void removeFunds(Player player) {
-        // O método removeItem do Bukkit já lida com remover de vários slots se estiver espalhado
-        player.getInventory().removeItem(new ItemStack(CURRENCY, PRICE));
+    private void removeFunds(Player player, int amount) {
+        ItemStack[] contents = player.getInventory().getContents();
+        int itemsToRemove = amount;
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+
+            if (item != null && Tag.SAPLINGS.isTagged(item.getType())) {
+                int quantity = item.getAmount();
+
+                if (quantity <= itemsToRemove) {
+                    // Se o stack for menor ou igual ao que precisamos remover, removemos tudo
+                    itemsToRemove -= quantity;
+                    player.getInventory().setItem(i, null); // Remove o item do slot
+                } else {
+                    // Se o stack for maior, removemos apenas a parte necessária
+                    item.setAmount(quantity - itemsToRemove);
+                    itemsToRemove = 0;
+                    // Não precisamos setar o item de volta pois item é uma referência direta,
+                    // mas o inventário atualiza automaticamente.
+                }
+
+                if (itemsToRemove <= 0) {
+                    break; // Já removemos tudo que precisava
+                }
+            }
+        }
     }
 }
