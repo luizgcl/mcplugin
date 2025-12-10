@@ -7,6 +7,9 @@ import br.com.luizgcl.command.factory.CommandFactory;
 import br.com.luizgcl.command.helper.CommandHelper;
 import br.com.luizgcl.entity.User;
 import br.com.luizgcl.repositories.UserRepository;
+import br.com.luizgcl.shop.ShopMenu;
+
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -87,5 +90,47 @@ public class UserCommands extends CommandBase {
         .usage("miner")
         .player()
         .register(Main.getInstance(), "miner");
+
+      CommandFactory.make(new CommandBuilderImpl() {
+          @Override
+          public void handler(CommandSender commandSender, CommandHelper helper, String... args)
+              throws Exception {
+            Player player = helper.getPlayer(commandSender);
+            UserRepository userRepository = new UserRepository();
+            User user = userRepository.findOne(player.getUniqueId());
+
+            boolean canMiner = user.isMinerActive();
+
+            user.setMinerActive(!canMiner);
+            player.sendMessage(
+                canMiner ? "§cVocê desativou o modo miner." :
+                    "§aVocê ativou o modo miner."
+            );
+
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+              userRepository.update(user);
+            });
+          }
+        })
+        .usage("miner")
+        .player()
+        .register(Main.getInstance(), "miner");
+
+        createSimpleCommand(player -> {
+          new ShopMenu().open(player);
+        }, "shop");
   }
+
+  private void createSimpleCommand(Consumer<Player> consumer, String... names) {
+    CommandFactory.make(new CommandBuilderImpl() {
+          @Override
+          public void handler(CommandSender commandSender, CommandHelper helper, String... args)
+              throws Exception {
+            Player player = helper.getPlayer(commandSender);
+            consumer.accept(player);
+          }
+        })
+        .player()
+        .register(Main.getInstance(), names);
+  } 
 }

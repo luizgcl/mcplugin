@@ -2,6 +2,7 @@ package br.com.luizgcl.menu.system;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -38,6 +39,7 @@ public abstract class Menu implements InventoryHolder {
 
     // Abre o menu para o player
     public void open(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1, 1);
         player.openInventory(inventory);
     }
 

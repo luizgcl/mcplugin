@@ -1,6 +1,7 @@
 package br.com.luizgcl;
 
 import br.com.luizgcl.database.MongoConnection;
+import br.com.luizgcl.manager.BackpackItemManager;
 import br.com.luizgcl.manager.TabListManager;
 import lombok.Getter;
 
@@ -11,6 +12,9 @@ public class Main extends BasePlugin {
 
   @Getter
   private static TabListManager tabManager;
+
+  @Getter
+  private static BackpackItemManager backpackItemManager;
 
   @Override
   public void load() {
@@ -30,6 +34,8 @@ public class Main extends BasePlugin {
           tabManager.updateAll();
       });
     }, 0L, 20L); 
+
+    backpackItemManager = new BackpackItemManager(this);
 
     getServer().getLogger().info("Plugin enabled!");
   }
