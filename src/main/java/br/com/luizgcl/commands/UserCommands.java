@@ -3,6 +3,7 @@ package br.com.luizgcl.commands;
 import br.com.luizgcl.Main;
 import br.com.luizgcl.command.CommandBase;
 import br.com.luizgcl.entity.User;
+import br.com.luizgcl.pet.GorillaMob;
 import br.com.luizgcl.repositories.UserRepository;
 
 import org.bukkit.Bukkit;
@@ -11,6 +12,10 @@ public class UserCommands extends CommandBase {
 
   @Override
   public void setup() {
+    createSimplePlayerCommand(player -> {
+      new GorillaMob(Main.getInstance(), player.getLocation(), player);
+    }, "test");
+
     createSimplePlayerCommand(player -> {
       player.sendMessage(
           "§eSeu ping é §b%s ms§e.".formatted(player.getPing()));
