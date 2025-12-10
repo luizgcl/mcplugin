@@ -12,8 +12,8 @@ public enum BackpackType {
     
     LEATHER( "Couro", Material.LEATHER,  TextColor.color(139, 69, 19), 32, 27),
     IRON( "Ferro", Material.IRON_INGOT,  TextColor.color(192, 192, 192), 64, 36),
-    GOLD("Ouro", Material.GOLD_INGOT,  TextColor.color(255, 215, 0), 128, 45),
-    DIAMOND("Diamante", Material.DIAMOND,  TextColor.color(0, 191, 255), 256, 54);
+    GOLD("Ouro", Material.GOLD_INGOT,  TextColor.color(255, 215, 0), 32, 45),
+    DIAMOND("Diamante", Material.DIAMOND,  TextColor.color(0, 191, 255), 10, 54);
 
     private String name;
     private Material materialType;

@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -32,12 +33,14 @@ public class BackpackItemManager {
 
     // Abre a mochila baseada no ITEM que está na mão
     public void openBackpack(Player player, ItemStack backpackItem) {
-        // Cria o inventário
-        Inventory inventory = Bukkit.createInventory(player, 27, 
-            MiniMessage.miniMessage().deserialize("<dark_green>Mochila"));
-
         ItemMeta meta = backpackItem.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        int size = container.getOrDefault(sizeKey, PersistentDataType.INTEGER, 27);
+
+        // Cria o inventário
+        Inventory inventory = Bukkit.createInventory(player, size, 
+            MiniMessage.miniMessage().deserialize("<dark_gray>Mochila"));
 
         // Se já tem itens salvos, carrega
         if (container.has(key, PersistentDataType.STRING)) {
@@ -79,6 +82,10 @@ public class BackpackItemManager {
         String backpackId = UUID.randomUUID().toString();
         
         meta.displayName(MiniMessage.miniMessage().deserialize("Mochila de " + type.getName()).color(type.getColor()));
+
+        meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+
         meta.lore(
             List.of(
                 MiniMessage.miniMessage().deserialize("Mochila: #" + backpackId.charAt(12)).color(TextColor.color(200, 200, 200)),
