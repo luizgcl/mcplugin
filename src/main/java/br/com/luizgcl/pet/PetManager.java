@@ -1,4 +1,4 @@
-package br.com.luizgcl.manager;
+package br.com.luizgcl.pet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;

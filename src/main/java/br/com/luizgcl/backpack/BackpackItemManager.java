@@ -1,4 +1,4 @@
-package br.com.luizgcl.manager;
+package br.com.luizgcl.backpack;
 
 import br.com.luizgcl.utils.SerializerUtils;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -69,7 +69,7 @@ public class BackpackItemManager {
     
     // Cria uma nova mochila para dar ao player
     public ItemStack createNewBackpack() {
-        ItemStack item = new ItemStack(Material.LEATHER);
+        ItemStack item = new ItemStack(Material.BUNDLE);
         ItemMeta meta = item.getItemMeta();
         
         meta.displayName(MiniMessage.miniMessage().deserialize("<green><b>Mochila de Couro</b>"));

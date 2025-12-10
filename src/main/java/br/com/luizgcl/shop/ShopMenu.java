@@ -1,9 +1,9 @@
 package br.com.luizgcl.shop;
 
 import br.com.luizgcl.Main;
-import br.com.luizgcl.manager.BackpackItemManager;
-import br.com.luizgcl.manager.PetManager;
-import br.com.luizgcl.menu.system.Menu;
+import br.com.luizgcl.backpack.BackpackItemManager;
+import br.com.luizgcl.menu.Menu;
+import br.com.luizgcl.pet.PetManager;
 import br.com.luizgcl.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

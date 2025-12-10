@@ -1,4 +1,4 @@
-package br.com.luizgcl.menu.system;
+package br.com.luizgcl.menu;
 
 import br.com.luizgcl.utils.ItemBuilder;
 import net.kyori.adventure.text.minimessage.MiniMessage;

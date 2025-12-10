@@ -1,4 +1,4 @@
-package br.com.luizgcl.menu.system;
+package br.com.luizgcl.menu;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

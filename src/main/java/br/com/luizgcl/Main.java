@@ -1,9 +1,9 @@
 package br.com.luizgcl;
 
+import br.com.luizgcl.backpack.BackpackItemManager;
 import br.com.luizgcl.database.MongoConnection;
-import br.com.luizgcl.manager.BackpackItemManager;
-import br.com.luizgcl.manager.PetManager;
 import br.com.luizgcl.manager.TabListManager;
+import br.com.luizgcl.pet.PetManager;
 import lombok.Getter;
 
 public class Main extends BasePlugin {

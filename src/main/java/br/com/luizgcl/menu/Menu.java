@@ -1,4 +1,4 @@
-package br.com.luizgcl.menu.system;
+package br.com.luizgcl.menu;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
