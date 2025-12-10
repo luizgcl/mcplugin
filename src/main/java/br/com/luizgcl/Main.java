@@ -49,6 +49,9 @@ public class Main extends BasePlugin {
   @Override
   public void disable() {
     getMongoConnection().disconnect();
+    if (petManager != null) {
+      petManager.removeAllPets();
+    }
     getServer().getLogger().info("Plugin disabled!");
   }
 }

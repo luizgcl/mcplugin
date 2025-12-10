@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,6 +77,16 @@ public class PetManager {
 
         // Verifica se ele tinha um pet salvo
         if (pdc.has(hasPetKey, PersistentDataType.BYTE)) {
+
+            for (org.bukkit.entity.Entity entity : player.getNearbyEntities(50, 50, 50)) {
+                if (entity instanceof Sheep && isPet(entity)) {
+                    // Verifica se o pet pertence a esse jogador
+                    String ownerUUID = entity.getPersistentDataContainer().get(petKey, PersistentDataType.STRING);
+                    if (ownerUUID != null && ownerUUID.equals(player.getUniqueId().toString())) {
+                        entity.remove(); // Remove a velha antes de criar a nova
+                    }
+                }
+            }
             
             // Recupera a cor
             String colorName = pdc.getOrDefault(petColorKey, PersistentDataType.STRING, "WHITE");
@@ -122,6 +133,18 @@ public class PetManager {
         if (followTasks.containsKey(uuid)) {
             followTasks.get(uuid).cancel();
             followTasks.remove(uuid);
+        }
+    }
+
+    public void removeAllPets() {
+        // Precisamos criar uma cópia da lista de players para evitar erro de modificação concorrente
+        for (UUID uuid : new HashSet<>(activePets.keySet())) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                // Remove a ovelha mas SALVA (true) os dados no player
+                // Assim, quando o server voltar, ele sabe que tem que restaurar
+                removePet(player, true);
+            }
         }
     }
     
