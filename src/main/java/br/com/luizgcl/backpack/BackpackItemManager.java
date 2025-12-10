@@ -1,6 +1,7 @@
 package br.com.luizgcl.backpack;
 
 import br.com.luizgcl.utils.SerializerUtils;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,23 +15,26 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public class BackpackItemManager {
 
     private final NamespacedKey key;
     private final NamespacedKey uuidKey; // Para garantir que cada mochila seja única
+    private final NamespacedKey sizeKey;
 
     public BackpackItemManager(JavaPlugin plugin) {
         this.key = new NamespacedKey(plugin, "backpack_content");
         this.uuidKey = new NamespacedKey(plugin, "backpack_uuid");
+        this.sizeKey = new NamespacedKey(plugin, "backpack_size");
     }
 
     // Abre a mochila baseada no ITEM que está na mão
     public void openBackpack(Player player, ItemStack backpackItem) {
         // Cria o inventário
         Inventory inventory = Bukkit.createInventory(player, 27, 
-            MiniMessage.miniMessage().deserialize("<dark_green>Mochila de Viagem"));
+            MiniMessage.miniMessage().deserialize("<dark_green>Mochila"));
 
         ItemMeta meta = backpackItem.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -68,14 +72,24 @@ public class BackpackItemManager {
     }
     
     // Cria uma nova mochila para dar ao player
-    public ItemStack createNewBackpack() {
+    public ItemStack createNewBackpack(BackpackType type) {
         ItemStack item = new ItemStack(Material.BUNDLE);
         ItemMeta meta = item.getItemMeta();
+
+        String backpackId = UUID.randomUUID().toString();
         
-        meta.displayName(MiniMessage.miniMessage().deserialize("<green><b>Mochila de Couro</b>"));
+        meta.displayName(MiniMessage.miniMessage().deserialize("Mochila de " + type.getName()).color(type.getColor()));
+        meta.lore(
+            List.of(
+                MiniMessage.miniMessage().deserialize("Mochila: #" + backpackId.charAt(12)).color(TextColor.color(200, 200, 200)),
+                MiniMessage.miniMessage().deserialize("Tamanho: " + type.getInventorySize() + " Espaços").color(TextColor.color(200, 200, 200)),
+                MiniMessage.miniMessage().deserialize("Clique para abrir!").color(TextColor.color(150, 150, 150))
+            )
+        );
         
         // Dá um ID único para ela (opcional, mas bom para evitar stackar mochilas diferentes)
-        meta.getPersistentDataContainer().set(uuidKey, PersistentDataType.STRING, UUID.randomUUID().toString());
+        meta.getPersistentDataContainer().set(uuidKey, PersistentDataType.STRING, backpackId);
+        meta.getPersistentDataContainer().set(sizeKey, PersistentDataType.INTEGER, type.getInventorySize());
         
         item.setItemMeta(meta);
         return item;

@@ -1,7 +1,7 @@
 package br.com.luizgcl.shop;
 
 import br.com.luizgcl.Main;
-import br.com.luizgcl.backpack.BackpackItemManager;
+import br.com.luizgcl.backpack.BackpackShopMenu;
 import br.com.luizgcl.menu.Menu;
 import br.com.luizgcl.pet.PetManager;
 import br.com.luizgcl.utils.ItemBuilder;
@@ -15,14 +15,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class ShopMenu extends Menu {
 
-    private final BackpackItemManager backpackManager;
     private final PetManager petManager;
-    private final int BACKPACK_PRICE = 64;
     private final int SHEEP_PRICE = 128;
 
     public ShopMenu() {
         super(3, MiniMessage.miniMessage().deserialize("<gradient:gold:yellow><b>Loja de Mochilas</b></gradient>"));
-        this.backpackManager = Main.getBackpackItemManager();
         this.petManager = Main.getPetManager();
         initItems();
     }
@@ -30,34 +27,16 @@ public class ShopMenu extends Menu {
     private void initItems() {
         // --- Slot 13: O Produto (Mochila) ---
         setItem(11,
-            new ItemBuilder(Material.LEATHER)
-                .name("<green><b>Mochila de Viagem</b>")
+            new ItemBuilder(Material.BUNDLE) // Use BUNDLE ou CHEST para representar a categoria
+                .name("<green><b>Comprar Mochilas</b>")
                 .lore(
-                    "<gray>Carregue mais itens com você!",
+                    "<gray>Clique para ver os modelos",
+                    "<gray>disponíveis (Couro, Ferro...)",
                     "",
-                    "<yellow>Preço: <white>" + BACKPACK_PRICE + "x Mudas (Qualquer tipo)",
-                    "<gray>Aceitamos: Carvalho, Pinheiro, Bétula, etc.",
-                    "",
-                    "<green>Clique para comprar!"
+                    "<green>Clique para abrir!"
                 ).build(),
-            
-            // AÇÃO DE COMPRA
             event -> {
-                Player player = (Player) event.getWhoClicked();
-                
-                if (hasFunds(player, BACKPACK_PRICE)) {
-                    removeFunds(player, BACKPACK_PRICE);
-                    
-                    // Entrega a mochila
-                    player.getInventory().addItem(backpackManager.createNewBackpack());
-                    
-                    player.sendMessage(Component.text("§aCompra realizada com sucesso!"));
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.sendMessage(Component.text("§cMudas insuficientes!"));
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                }
+                new BackpackShopMenu().open((Player) event.getWhoClicked());
             }
         );
 

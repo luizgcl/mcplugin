@@ -32,7 +32,7 @@ public class BackpackListener implements Listener {
     public void onClose(InventoryCloseEvent event) {
         String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
         
-        if (title.contains("Mochila de Viagem")) {
+        if (title.contains("Mochila")) {
             // Precisamos descobrir QUAL item ele usou para abrir.
             // Geralmente é o da mão principal.
             Player player = (Player) event.getPlayer();
@@ -49,7 +49,7 @@ public class BackpackListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
-        if (!title.contains("Mochila de Viagem")) return;
+        if (!title.contains("Mochila")) return;
         
         ItemStack current = event.getCurrentItem();
         ItemStack cursor = event.getCursor();

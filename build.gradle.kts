@@ -26,7 +26,7 @@ dependencies {
 bukkit {
     main = "br.com.luizgcl.Main"
     name = "minecraft-server"
-    version = "0.0.1"
+    version = "0.0.4"
     apiVersion = "1.21"
     description = "Bukkit Plugin"
     website = "https://luizgcl.com.br/"
