@@ -22,7 +22,7 @@ public class PlayerListener implements Listener {
             .append(Component.text("Seja bem-vindo ao servidor!").color(NamedTextColor.GREEN))
             .append(Component.newline())
             .append(Component.text("Divirta-se!").color(NamedTextColor.YELLOW)));
-    
+
     UserRepository userRepository = new UserRepository();
 
     User user = userRepository.findOne(event.getPlayer().getUniqueId());

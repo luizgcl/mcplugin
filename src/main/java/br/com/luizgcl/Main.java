@@ -35,9 +35,9 @@ public class Main extends BasePlugin {
 
     getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
       getServer().getScheduler().runTask(this, () -> {
-          tabManager.updateAll();
+        tabManager.updateAll();
       });
-    }, 0L, 20L); 
+    }, 0L, 20L);
 
     backpackItemManager = new BackpackItemManager(this);
 

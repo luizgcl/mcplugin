@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -68,6 +69,8 @@ public class ItemBuilder {
     }
 
     public ItemStack build() {
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+
         item.setItemMeta(meta);
         return item;
     }
