@@ -27,10 +27,14 @@ bukkit {
     main = "br.com.luizgcl.Main"
     name = "minecraft-server"
     version = "0.0.5"
-    apiVersion = "1.21"
+    apiVersion = "1.21.10"
     description = "Bukkit Plugin"
     website = "https://luizgcl.com.br/"
     authors = listOf("luizgcl")
+}
+
+java {
+  toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 tasks.withType<JavaCompile> {

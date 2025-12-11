@@ -83,7 +83,7 @@ public class BackpackItemManager {
         
         meta.displayName(MiniMessage.miniMessage().deserialize("Mochila de " + type.getName()).color(type.getColor()));
 
-        meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         meta.lore(
